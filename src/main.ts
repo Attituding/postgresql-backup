@@ -79,16 +79,14 @@ import shell from 'shelljs';
 
             console.log('n', file.status);
 
-            await fs.writeFile(`${__dirname}../temp.tar`, String(file.data));
+            await fs.writeFile(`${basePath}temp.tar`, String(file.data));
 
-            res.sendStatus(200);
+            const output = shell.exec(`pg_restore -U ${user} -h ${host} -p ${port} -w -F t -d ${database} temp.tar`);
+
+            res.status(200).send(output);
         } else {
             res.sendStatus(401);
         }
-
-        //await fs.writeFile(`${__dirname}../temp.tar`, file.data);
-
-        //const output = shell.exec(`pg_restore -U ${user} -h ${host} -p ${port} -w -F t -d ${database} ${constants.fileName}.tar`);
     });
 
     app.listen(3000);
