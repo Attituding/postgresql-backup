@@ -33,7 +33,7 @@ import shell from 'shelljs';
     const port = process.env.PGPORT!;
     const user = process.env.PGUSER!;
 
-    cron.schedule('*/1 * * * *', async () => {
+    cron.schedule('0 0 * * *', async () => {
         try {
             const output = shell.exec(`pg_dump -U ${user} -h ${host} -p ${port} -w -F t ${database} > ${constants.fileName}.tar`);
 
@@ -47,7 +47,7 @@ import shell from 'shelljs';
 
                 const stats = await fs.stat(path);
 
-                console.log(stats.size);
+                console.log(`${time}.tar ${stats.size} bytes`);
 
                 await drive.files.create({
                     requestBody: {
