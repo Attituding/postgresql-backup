@@ -4,10 +4,10 @@ RUN apt-get update
 
 RUN apt-get install postgresql-client -y
 
-ENV PGDATABASE=postgres
-ENV PGHOST=PGHOST
-ENV PGPASSWORD=PGPASSWORD
-ENV PGPORT=5432
+ENV PGDATABASE=railway
+ENV PGHOST=containers-us-west-36.railway.app
+ENV PGPASSWORD=VUvkDhEEAXHffWVtXjZR
+ENV PGPORT=5565
 ENV PGUSER=postgres
 
 EXPOSE ${PGPORT} 3000
