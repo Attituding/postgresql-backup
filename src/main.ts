@@ -56,12 +56,14 @@ import shell from 'shelljs';
             supportsAllDrives: true,
         });
 
-        const file = await drive.files.get({
+        console.log(files.data.files);
+
+        /**
+         * const file = await drive.files.get({
             fileId: files.data.files![0]!.id!,
             alt: 'media',
         });
-
-        console.log(file);
+         */
 
         //await fs.writeFile(`${__dirname}../temp.tar`, file.data);
 
