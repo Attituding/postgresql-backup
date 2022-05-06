@@ -65,19 +65,26 @@ import shell from 'shelljs';
                 supportsAllDrives: true,
             });
 
-            console.log(files.data.files);
+            if (
+                typeof files.data.files === 'undefined' ||
+                files.data.files?.length !== 0
+            ) {
+                res.status(500).send('No backups available.');
+            }
+
+            const file = await drive.files.get({
+                fileId: files.data.files![0]!.id!,
+                alt: 'media',
+            });
+
+            console.log('n', file.status);
+
+            await fs.writeFile(`${__dirname}../temp.tar`, String(file.data));
 
             res.sendStatus(200);
         } else {
             res.sendStatus(401);
         }
-
-        /**
-         * const file = await drive.files.get({
-            fileId: files.data.files![0]!.id!,
-            alt: 'media',
-        });
-         */
 
         //await fs.writeFile(`${__dirname}../temp.tar`, file.data);
 
