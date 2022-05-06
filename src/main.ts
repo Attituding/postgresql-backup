@@ -53,6 +53,7 @@ import shell from 'shelljs';
             includeItemsFromAllDrives: true,
             pageSize: 1,
             q: `'${constants.parentFolder}' in parents and trashed = false`,
+            supportsAllDrives: true,
         });
 
         const file = await drive.files.get({
