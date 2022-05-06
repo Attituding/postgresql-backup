@@ -39,7 +39,11 @@ import shell from 'shelljs';
     const user = process.env.PGUSER!;
 
     app.all('/backup', async (req, res) => {
-        if (req.headers.authorization === password) {
+        const query = req.query;
+
+        console.log('/backup', query);
+
+        if (query.auth === '1') {
             await attempt(backup);
 
             res.sendStatus(200);
@@ -49,14 +53,24 @@ import shell from 'shelljs';
     });
 
     app.all('/restore', async (req, res) => {
-        const files = await drive.files.list({
-            includeItemsFromAllDrives: true,
-            pageSize: 1,
-            q: `'${constants.parentFolder}' in parents and trashed = false`,
-            supportsAllDrives: true,
-        });
+        const query = req.query;
 
-        console.log(files.data.files);
+        console.log('/restore', query);
+
+        if (query.auth === '1') {
+            const files = await drive.files.list({
+                includeItemsFromAllDrives: true,
+                pageSize: 1,
+                q: `'${constants.parentFolder}' in parents and trashed = false`,
+                supportsAllDrives: true,
+            });
+
+            console.log(files.data.files);
+
+            res.sendStatus(200);
+        } else {
+            res.sendStatus(401);
+        }
 
         /**
          * const file = await drive.files.get({
