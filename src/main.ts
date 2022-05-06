@@ -65,8 +65,8 @@ import shell from 'shelljs';
                 await fs.unlink(path);
             }
         } catch (error) {
-            console.log(error);
-            throw error;
+            console.error(error);
+            process.exit(1);
         }
     }, {
         timezone: 'America/Vancouver',
