@@ -67,6 +67,8 @@ import shell from 'shelljs';
         //const output = shell.exec(`pg_restore -U ${user} -h ${host} -p ${port} -w -F t -d ${database} ${constants.fileName}.tar`);
     });
 
+    app.listen(3000);
+
     cron.schedule('0 0 * * *', async () => {
         await attempt(backup);
     }, {
