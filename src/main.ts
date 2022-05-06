@@ -67,7 +67,7 @@ import shell from 'shelljs';
 
             if (
                 typeof files.data.files === 'undefined' ||
-                files.data.files?.length !== 0
+                files.data.files?.length === 0
             ) {
                 res.status(500).send('No backups available.');
             } else {
