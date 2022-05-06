@@ -1,0 +1,5 @@
+# ignore compiled js
+out
+
+# Files with secrets
+Dockerfile
