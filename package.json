@@ -12,10 +12,12 @@
     },
     "dependencies": {
         "@googleapis/drive": "^2.3.0",
+        "@types/express": "^4.17.13",
         "@types/node": "^17.0.31",
         "@types/node-cron": "^3.0.1",
         "@types/shelljs": "^0.8.11",
         "dotenv": "^16.0.0",
+        "express": "^4.18.1",
         "node-cron": "^3.0.0",
         "node-fetch": "^2.6.7",
         "shelljs": "^0.8.5",
