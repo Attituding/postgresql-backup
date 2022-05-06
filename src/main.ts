@@ -62,11 +62,9 @@ import shell from 'shelljs';
 
         console.log(file);
 
-        return;
+        //await fs.writeFile(`${__dirname}../temp.tar`, file.data);
 
-        await fs.writeFile(`${__dirname}../temp.tar`, file.data);
-
-        const output = shell.exec(`pg_restore -U ${user} -h ${host} -p ${port} -w -F t -d ${database} ${constants.fileName}.tar`);
+        //const output = shell.exec(`pg_restore -U ${user} -h ${host} -p ${port} -w -F t -d ${database} ${constants.fileName}.tar`);
     });
 
     cron.schedule('0 0 * * *', async () => {
