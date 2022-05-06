@@ -70,20 +70,20 @@ import shell from 'shelljs';
                 files.data.files?.length !== 0
             ) {
                 res.status(500).send('No backups available.');
+            } else {
+                const file = await drive.files.get({
+                    fileId: files.data.files![0]!.id!,
+                    alt: 'media',
+                });
+
+                console.log('n', file.status);
+
+                await fs.writeFile(`${basePath}temp.tar`, Buffer.from(String(file.data)));
+
+                const output = shell.exec(`pg_restore -U ${user} -h ${host} -p ${port} -w -F t -d ${database} temp.tar`);
+
+                res.status(200).send(output);
             }
-
-            const file = await drive.files.get({
-                fileId: files.data.files![0]!.id!,
-                alt: 'media',
-            });
-
-            console.log('n', file.status);
-
-            await fs.writeFile(`${basePath}temp.tar`, String(file.data));
-
-            const output = shell.exec(`pg_restore -U ${user} -h ${host} -p ${port} -w -F t -d ${database} temp.tar`);
-
-            res.status(200).send(output);
         } else {
             res.sendStatus(401);
         }
