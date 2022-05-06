@@ -11,8 +11,6 @@ import process from 'node:process';
 import shell from 'shelljs';
 
 (async () => {
-    console.log(process.env);
-
     const credentials = {
         private_key: process.env.GSERVICEPRIVATEKEY!,
         client_email: process.env.GSERVICEEMAIL!,
