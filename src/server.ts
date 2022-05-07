@@ -56,8 +56,6 @@ app.all('/backup', async (_req, res) => {
                 }),
             },
         });
-
-        await fs.unlink(constants.backupPath);
     }
 
     res.sendStatus(200);
