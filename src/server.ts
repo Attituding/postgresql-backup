@@ -61,25 +61,25 @@ app.all('/backup', async (_req, res) => {
     res.sendStatus(200);
 });
 
-app.all('/restore', async (_req, res) => {
+app.all('/restore', async (req, res) => {
+    const query = req.query;
+
     const drive = await driveExport();
 
-    const files = await drive.files.list({
-        includeItemsFromAllDrives: true,
-        pageSize: 1,
-        // eslint-disable-next-line id-length
-        q: `'${constants.parentFolder}' in parents and trashed = false`,
-        supportsAllDrives: true,
-    });
+    const fileID = (query.fileID as string | undefined) ??
+        (
+            await drive.files.list({
+                includeItemsFromAllDrives: true,
+                pageSize: 1,
+                // eslint-disable-next-line id-length
+                q: `'${constants.parentFolder}' in parents and trashed = false`,
+                supportsAllDrives: true,
+            })
+        ).data.files?.[0]?.id;
 
-    if (
-        typeof files.data.files === 'undefined' ||
-        files.data.files?.length === 0
-    ) {
-        res.status(500).send('No backups available.');
-    } else {
+    if (fileID) {
         const file = await drive.files.get({
-            fileId: files.data.files![0]!.id!,
+            fileId: fileID,
             alt: 'media',
         });
 
@@ -91,9 +91,11 @@ app.all('/restore', async (_req, res) => {
             },
         );
 
-        const output = shell.exec(`pg_restore -U ${env.user} -h ${env.host} -p ${env.port} -w -c -F t -d ${env.database} temp.tar`);
+        shell.exec(`pg_restore -U ${env.user} -h ${env.host} -p ${env.port} -w -c -F t -d ${env.database} temp.tar`);
 
-        res.status(200).send(output);
+        res.status(200).send(`Restored from ${fileID}`);
+    } else {
+        res.status(500).send('No backups available.');
     }
 });
 

@@ -4,7 +4,6 @@ import {
 } from './constants';
 import { driveExport } from './drive';
 import cron from 'node-cron';
-import fs from 'node:fs/promises';
 import fsSync from 'node:fs';
 import process from 'node:process';
 import shell from 'shelljs';
@@ -37,12 +36,10 @@ cron.schedule('0 0 * * *', async () => {
                     }),
                 },
             });
-
-            await fs.unlink(constants.backupPath);
         }
     } catch (error) {
         console.error(error);
-        process.exit(1);
+        process.exit(-1);
     }
 }, {
     timezone: 'America/Vancouver',
