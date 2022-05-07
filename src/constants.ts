@@ -7,6 +7,8 @@ export const constants = {
 };
 
 export const env = {
+    private_key: process.env.GSERVICEPRIVATEKEY!,
+    client_email: process.env.GSERVICEEMAIL!,
     database: process.env.PGDATABASE!,
     host: process.env.PGHOST!,
     password: process.env.PGPASSWORD!,

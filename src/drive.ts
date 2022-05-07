@@ -2,17 +2,17 @@ import {
     auth,
     drive as googleDrive,
 } from '@googleapis/drive';
-import { constants } from './constants';
-import process from 'node:process';
-
-const credentials = {
-    private_key: process.env.GSERVICEPRIVATEKEY!,
-    client_email: process.env.GSERVICEEMAIL!,
-};
+import {
+    constants,
+    env,
+} from './constants';
 
 const authorization = auth.getClient({
     scopes: constants.scopes,
-    credentials: credentials,
+    credentials: {
+        private_key: env.private_key,
+        client_email: env.client_email,
+    },
 });
 
 export const driveExport = async () => googleDrive({
