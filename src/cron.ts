@@ -8,9 +8,7 @@ import fsSync from 'node:fs';
 import process from 'node:process';
 import shell from 'shelljs';
 
-console.log('a');
-
-cron.schedule('*/5 * * * *', async () => {
+cron.schedule('0 0 * * *', async date => {
     try {
         const output = shell.exec(`pg_dump -U ${env.user} -h ${env.host} -p ${env.port} -w -F t ${env.database} > ${constants.fileName}.tar`);
 
@@ -19,7 +17,7 @@ cron.schedule('*/5 * * * *', async () => {
         } else {
             const drive = await driveExport();
 
-            const time = new Date().toLocaleString(
+            const time = date.toLocaleString(
                 undefined,
                 { hour12: false },
             );
@@ -46,5 +44,3 @@ cron.schedule('*/5 * * * *', async () => {
 }, {
     timezone: 'America/Vancouver',
 });
-
-console.log(cron.getTasks());
