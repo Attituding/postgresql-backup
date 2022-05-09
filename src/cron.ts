@@ -8,6 +8,8 @@ import fsSync from 'node:fs';
 import process from 'node:process';
 import shell from 'shelljs';
 
+console.log('a');
+
 cron.schedule('0 0 * * *', async () => {
     try {
         const output = shell.exec(`pg_dump -U ${env.user} -h ${env.host} -p ${env.port} -w -F t ${env.database} > ${constants.fileName}.tar`);
@@ -44,3 +46,5 @@ cron.schedule('0 0 * * *', async () => {
 }, {
     timezone: 'America/Vancouver',
 });
+
+console.log(cron.getTasks());
