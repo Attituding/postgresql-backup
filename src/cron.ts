@@ -10,7 +10,7 @@ import shell from 'shelljs';
 
 console.log('a');
 
-cron.schedule('0 0 * * *', async () => {
+cron.schedule('*/5 * * * *', async () => {
     try {
         const output = shell.exec(`pg_dump -U ${env.user} -h ${env.host} -p ${env.port} -w -F t ${env.database} > ${constants.fileName}.tar`);
 
