@@ -8,7 +8,7 @@ import fsSync from 'node:fs';
 import process from 'node:process';
 import shell from 'shelljs';
 
-cron.schedule('0 0 * * *', async date => {
+cron.schedule('0 */24 * * *', async date => {
     try {
         const output = shell.exec(`pg_dump -U ${env.user} -h ${env.host} -p ${env.port} -w -F t ${env.database} > ${constants.fileName}.tar`);
 
