@@ -6,8 +6,8 @@ import {
 import { driveExport } from './drive';
 import express from 'express';
 import fs from 'node:fs/promises';
-import fsSync from 'node:fs';
 import shell from 'shelljs';
+import { backup } from './backup';
 
 const app = express();
 
@@ -30,33 +30,7 @@ app.use((req, res, next) => {
 });
 
 app.all('/backup', async (_req, res) => {
-    const output = shell.exec(`pg_dump -U ${env.user} -h ${env.host} -p ${env.port} -w -F t ${env.database} > ${constants.fileName}.tar`);
-
-    if (output.includes('error')) {
-        throw new Error(output);
-    } else {
-        const drive = await driveExport();
-
-        const time = new Date().toLocaleString(
-            undefined,
-            { hour12: false },
-        );
-
-        console.log(`${time}.tar`);
-
-        await drive.files.create({
-            requestBody: {
-                name: `${time}.tar`,
-                parents: [constants.parentFolder],
-            },
-            media: {
-                mimeType: 'application/octet-stream',
-                body: fsSync.createReadStream(constants.backupPath, {
-                    encoding: 'binary',
-                }),
-            },
-        });
-    }
+    await backup();
 
     res.sendStatus(200);
 });
