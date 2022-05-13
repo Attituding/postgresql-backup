@@ -22,7 +22,7 @@ cron.schedule('0 */24 * * *', async date => {
                 { hour12: false },
             );
 
-            console.log(`${time}.tar`);
+            console.log(`${time} 1.tar`);
 
             await drive.files.create({
                 requestBody: {
