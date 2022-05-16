@@ -22,7 +22,7 @@ export async function backup(date: Date | undefined = new Date()) {
 
         await drive.files.create({
             requestBody: {
-                name: `${time}.tar 1`,
+                name: `${time}.tar`,
                 parents: [constants.parentFolder],
             },
             media: {

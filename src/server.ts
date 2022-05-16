@@ -40,16 +40,15 @@ app.all('/restore', async (req, res) => {
 
     const drive = await driveExport();
 
-    const fileID = (query.fileID as string | undefined) ??
-        (
-            await drive.files.list({
-                includeItemsFromAllDrives: true,
-                pageSize: 1,
-                // eslint-disable-next-line id-length
-                q: `'${constants.parentFolder}' in parents and trashed = false`,
-                supportsAllDrives: true,
-            })
-        ).data.files?.[0]?.id;
+    const fileID = (query.fileID as string | undefined) ?? (
+        await drive.files.list({
+            includeItemsFromAllDrives: true,
+            pageSize: 1,
+            // eslint-disable-next-line id-length
+            q: `'${constants.parentFolder}' in parents and trashed = false`,
+            supportsAllDrives: true,
+        })
+    ).data.files?.[0]?.id;
 
     if (fileID) {
         const file = await drive.files.get({
