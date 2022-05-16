@@ -1,4 +1,5 @@
 import 'dotenv/config';
+import { backup } from './backup';
 import {
     constants,
     env,
@@ -7,7 +8,6 @@ import { driveExport } from './drive';
 import express from 'express';
 import fs from 'node:fs/promises';
 import shell from 'shelljs';
-import { backup } from './backup';
 
 const app = express();
 
@@ -29,14 +29,20 @@ app.use((req, res, next) => {
     }
 });
 
-app.all('/backup', async (_req, res) => {
-    await backup();
+app.all('/backup', async (req, res) => {
+    const query = req.query;
+
+    const database = query.database as string ?? env.database;
+
+    await backup({ database: database });
 
     res.sendStatus(200);
 });
 
 app.all('/restore', async (req, res) => {
     const query = req.query;
+
+    const database = query.database ?? env.database;
 
     const drive = await driveExport();
 
@@ -64,7 +70,7 @@ app.all('/restore', async (req, res) => {
             },
         );
 
-        shell.exec(`pg_restore -U ${env.user} -h ${env.host} -p ${env.port} -w -c -F t -d ${env.database} temp.tar`);
+        shell.exec(`pg_restore -U ${env.user} -h ${env.host} -p ${env.port} -w -c -F t -d ${database} temp.tar`);
 
         res.status(200).send(`Restored from ${fileID}`);
     } else {

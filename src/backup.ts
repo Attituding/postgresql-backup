@@ -6,9 +6,15 @@ import { driveExport } from './drive';
 import fsSync from 'node:fs';
 import shell from 'shelljs';
 
-export async function backup(date: Date | undefined = new Date()) {
+export async function backup({
+    database = env.database,
+    date = new Date(),
+}: {
+    database?: string,
+    date?: Date,
+}) {
     const output = shell.exec(
-        `pg_dump -U ${env.user} -h ${env.host} -p ${env.port} -w -F t ${env.database} > ${constants.fileName}.tar`,
+        `pg_dump -U ${env.user} -h ${env.host} -p ${env.port} -w -F t ${database} > ${constants.fileName}.tar`,
     );
 
     if (output.includes('error')) {
