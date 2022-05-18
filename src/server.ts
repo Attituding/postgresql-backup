@@ -70,9 +70,17 @@ app.all('/restore', async (req, res) => {
             },
         );
 
-        shell.exec(`pg_restore -U ${env.user} -h ${env.host} -p ${env.port} -w -c -F t -d ${database} temp.tar`);
+        const output = shell.exec(
+            `pg_restore -U ${env.user} -h ${env.host} -p ${env.port} -w -c -F t -d ${database} temp.tar`,
+        );
 
-        res.status(200).send(`Restored from ${fileID}`);
+        if (output.includes('error')) {
+            res.status(500).send(`An error occured while trying to restore.\n\nError:\n${output}`);
+            console.error(new Error(output));
+            return;
+        }
+
+        res.status(200).send(`Restored from ${fileID} to ${database}\n\nOutput:\n${output}`);
     } else {
         res.status(500).send('No backups available.');
     }
