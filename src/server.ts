@@ -88,7 +88,7 @@ app.all('/restore', async (req, res) => {
 });
 
 app.all('*', (_req, res) => {
-    res.status(404).sendFile(path.join(__dirname, 'index.html'));
+    res.status(404).sendFile(path.join(__dirname, '/index.html'));
 });
 
 app.listen(3000, '0.0.0.0');
