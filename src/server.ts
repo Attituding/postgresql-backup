@@ -86,4 +86,8 @@ app.all('/restore', async (req, res) => {
     }
 });
 
+app.all('*', (_req, res) => {
+    res.status(404).render('index.html');
+});
+
 app.listen(3000, '0.0.0.0');
