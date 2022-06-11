@@ -8,7 +8,6 @@ import { driveExport } from './drive';
 import express from 'express';
 import fs from 'node:fs/promises';
 import shell from 'shelljs';
-import path from 'node:path';
 
 const app = express();
 
@@ -88,7 +87,11 @@ app.all('/restore', async (req, res) => {
 });
 
 app.all('*', (_req, res) => {
-    res.status(404).sendFile(path.join(__dirname, '/index.html'));
+    res.status(404).send(
+        `/?auth=password<br>
+        /backup?database=database<br>
+        /restore?database=database&filedID=filedID<br>`,
+    );
 });
 
 app.listen(3000, '0.0.0.0');
