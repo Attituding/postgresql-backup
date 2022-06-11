@@ -75,7 +75,7 @@ app.all('/restore', async (req, res) => {
         );
 
         if (output.includes('error')) {
-            res.status(500).send(`An error occured while trying to restore.\n\nError:\n${output}`);
+            res.status(500).send(`An error occurred while trying to restore.\n\nError:\n${output}`);
             console.error(new Error(output));
             return;
         }
