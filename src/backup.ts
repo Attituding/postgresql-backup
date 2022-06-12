@@ -5,37 +5,70 @@ import {
 import { driveExport } from './drive';
 import fsSync from 'node:fs';
 import shell from 'shelljs';
+import path from 'node:path';
 
-export async function backup({
-    database = env.database,
-    date = new Date(),
-}: {
-    database?: string,
-    date?: Date,
-}) {
-    const output = shell.exec(
-        `pg_dump -U ${env.user} -h ${env.host} -p ${env.port} -w -F t ${database} > ${constants.fileName}.tar`,
-    );
+export async function backup(date = new Date()) {
+    const drive = await driveExport();
 
-    if (output.includes('error')) {
-        throw new Error(output);
-    } else {
-        const drive = await driveExport();
+    const time = date.toLocaleString(undefined, { hour12: false });
 
-        const time = date.toLocaleString(undefined, { hour12: false });
+    const folder = await drive.files.create({
+        requestBody: {
+            name: time,
+            mimeType: 'application/vnd.google-apps.folder',
+            parents: [constants.parentFolder],
+        },
+        fields: 'id',
+    });
 
-        console.log(`${time}.tar`);
+    console.log(`${time}.tar`);
+
+    await Promise.all([
+        //Global objects (roles and tablespaces), no databases
+        createFile('global.out',
+            `pg_dumpall --host=${
+                env.host
+            } --port=${
+                env.port
+            } --username=${
+                env.user
+            } --no-password --clean --file=global.out --globals-only`,
+        ),
+
+        //Databases
+        ...constants.databases.map(database =>
+            createFile(`${database}.tar`,
+                `pg_dump --host=${
+                    env.host
+                } --port=${
+                env.port
+                } --username=${
+                    env.user
+                } --no-password --format=t ${database} > ${database}.tar`,
+            ),
+        ),
+    ]);
+
+    async function createFile(name: string, script: string) {
+        const output = shell.exec(script);
+
+        if (output.toLowerCase().includes('error')) {
+            console.error(new Error(output));
+            throw new Error(output);
+        }
 
         await drive.files.create({
             requestBody: {
-                name: `${time}.tar`,
-                parents: [constants.parentFolder],
+                name: name,
+                parents: [folder.data.id!],
             },
             media: {
                 mimeType: 'application/octet-stream',
-                body: fsSync.createReadStream(constants.backupPath, {
-                    encoding: 'binary',
-                }),
+                body: fsSync.createReadStream(
+                    path.join(__dirname, '..', name), {
+                        encoding: 'binary',
+                    },
+                ),
             },
         });
     }

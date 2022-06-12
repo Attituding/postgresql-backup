@@ -4,7 +4,7 @@ import { backup } from './backup';
 
 cron.schedule('0 */24 * * *', async date => {
     try {
-        await backup({ date: date });
+        await backup(date);
     } catch (error) {
         console.error(error);
         process.exit(-1);

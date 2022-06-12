@@ -8,6 +8,7 @@ import { driveExport } from './drive';
 import express from 'express';
 import fs from 'node:fs/promises';
 import shell from 'shelljs';
+import path from 'node:path';
 
 const app = express();
 
@@ -30,11 +31,7 @@ app.use((req, res, next) => {
 });
 
 app.all('/backup', async (req, res) => {
-    const query = req.query;
-
-    const database = query.database as string ?? env.database;
-
-    await backup({ database: database });
+    await backup();
 
     res.sendStatus(200);
 });
@@ -42,55 +39,64 @@ app.all('/backup', async (req, res) => {
 app.all('/restore', async (req, res) => {
     const query = req.query;
 
-    const database = query.database ?? env.database;
+    const database = query.database;
+
+    const fileID = query.fileID;
+
+    if (constants.databases.includes(String(database)) === false) {
+        res.status(400).send(`Invalid database: ${database} is not listen in ${constants.databases.join(', ')}`);
+    }
+
+    if (typeof fileID === 'undefined') {
+        res.status(400).send(`No fileID provided`);
+    }
+
+    if (typeof fileID !== 'string') {
+        res.status(400).send(`Invalid fileID provided: ${fileID} is not typeof string`);
+    }
 
     const drive = await driveExport();
 
-    const fileID = (query.fileID as string | undefined) ?? (
-        await drive.files.list({
-            includeItemsFromAllDrives: true,
-            pageSize: 1,
-            // eslint-disable-next-line id-length
-            q: `'${constants.parentFolder}' in parents and trashed = false`,
-            supportsAllDrives: true,
-        })
-    ).data.files?.[0]?.id;
+    const file = await drive.files.get({
+        fileId: fileID as string,
+        alt: 'media',
+    });
 
-    if (fileID) {
-        const file = await drive.files.get({
-            fileId: fileID,
-            alt: 'media',
-        });
+    await fs.writeFile(
+        path.join(__dirname, '..', 'temp.tar'),
+        file.data as string,
+        {
+            encoding: 'binary',
+        },
+    );
 
-        await fs.writeFile(
-            constants.tempPath,
-            file.data as string,
-            {
-                encoding: 'binary',
-            },
-        );
+    const output = shell.exec(
+        `pg_restore --host=${
+            env.host
+        } --port=${
+            env.port
+        } --username=${
+            env.user
+        } --no-password --clean --format=t --dbname=${
+            database
+        } temp.tar`,
+    );
 
-        const output = shell.exec(
-            `pg_restore -U ${env.user} -h ${env.host} -p ${env.port} -w -c -F t -d ${database} temp.tar`,
-        );
+    if (output.toLowerCase().includes('error')) {
+        res.status(500).send(`An error occurred while trying to restore.\n\nError:\n${output}`);
+        console.error(new Error(output));
 
-        if (output.includes('error')) {
-            res.status(500).send(`An error occurred while trying to restore.\n\nError:\n${output}`);
-            console.error(new Error(output));
-            return;
-        }
-
-        res.status(200).send(`Restored from ${fileID} to ${database}\n\nOutput:\n${output}`);
-    } else {
-        res.status(500).send('No backups available.');
+        return;
     }
+
+    res.sendStatus(200);
 });
 
 app.all('*', (_req, res) => {
     res.status(404).send(
         `/?auth=password<br>
         <br>
-        /backup?database=database<br>
+        /backup<br>
         /restore?database=database&fileID=fileID<br>`,
     );
 });
