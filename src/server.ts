@@ -89,8 +89,9 @@ app.all('/restore', async (req, res) => {
 app.all('*', (_req, res) => {
     res.status(404).send(
         `/?auth=password<br>
+        <br>
         /backup?database=database<br>
-        /restore?database=database&filedID=filedID<br>`,
+        /restore?database=database&fileID=fileID<br>`,
     );
 });
 
