@@ -21,8 +21,6 @@ export async function backup(date = new Date()) {
         fields: 'id',
     });
 
-    console.log(`${time}.tar`);
-
     await Promise.all([
         //Global objects (roles and tablespaces), no databases
         createFile('global.out',
@@ -44,10 +42,16 @@ export async function backup(date = new Date()) {
                 env.port
                 } --username=${
                     env.user
-                } --no-password --format=t ${database} > ${database}.tar`,
+                } --no-password --format=t ${
+                    database
+                } > ${
+                    database
+                }.tar`,
             ),
         ),
     ]);
+
+    console.log(`Created backup ${time}`);
 
     async function createFile(name: string, script: string) {
         const output = shell.exec(script);
