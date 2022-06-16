@@ -1,8 +1,9 @@
+.vscode
+dist
 node_modules
 .env.sample
 .eslintrc
 .gitignore
-.prettierrc.json
+.prettierrc
 LICENSE
-.vscode
 **.js
