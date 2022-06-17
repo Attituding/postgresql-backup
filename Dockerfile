@@ -10,12 +10,10 @@ WORKDIR /usr/src/app
 
 ADD . /usr/src/app
 
-RUN npm install --omit=dev
-
-RUN npm install typescript
+RUN npm install
 
 RUN npm run build
 
-RUN npm uninstall typescript
+RUN npm prune --production
 
 CMD npm run run
