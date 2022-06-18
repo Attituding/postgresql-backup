@@ -1,13 +1,13 @@
-import { backup } from './backup';
-import {
-    constants,
-    env,
-} from './constants';
-import { driveExport } from './drive';
 import express from 'express';
 import fs from 'node:fs/promises';
 import shell from 'shelljs';
 import path from 'node:path';
+import { driveExport } from './drive';
+import {
+    constants,
+    env,
+} from './constants';
+import { backup } from './backup';
 
 const app = express();
 
@@ -18,9 +18,9 @@ app.use((req, _res, next) => {
 });
 
 app.use((req, res, next) => {
-    const query = req.query;
+    const { auth } = req.query;
 
-    if (query.auth === env.password) {
+    if (auth === env.password) {
         // eslint-disable-next-line callback-return
         next();
     } else {
@@ -36,10 +36,10 @@ app.all('/backup', async (req, res) => {
 });
 
 app.all('/raw', (req, res) => {
-    const query = req.query.query;
+    const { query } = req.query;
 
     if (typeof query === 'undefined') {
-        res.status(400).send(`No query provided`);
+        res.status(400).send('No query provided');
 
         return;
     }
@@ -73,11 +73,7 @@ app.all('/raw', (req, res) => {
 });
 
 app.all('/restore/database', async (req, res) => {
-    const query = req.query;
-
-    const database = query.database;
-
-    const fileID = query.fileID;
+    const { database, fileID } = req.query;
 
     if (constants.databases.includes(String(database)) === false) {
         res.status(400).send(`Invalid database: ${database} is not listed in ${constants.databases.join(', ')}`);
@@ -86,12 +82,12 @@ app.all('/restore/database', async (req, res) => {
     }
 
     if (typeof fileID === 'undefined') {
-        res.status(400).send(`No fileID provided`);
+        res.status(400).send('No fileID provided');
 
         return;
     }
 
-    const queryLength = Object.values(query).length;
+    const queryLength = Object.values(req.query).length;
 
     if (queryLength !== 3) {
         res.status(400).send(`Invalid amount of queries: ${queryLength} is not the expected amount of queries. Did you mean to use /restore/global?`);
@@ -145,12 +141,12 @@ app.all('/restore/database', async (req, res) => {
 });
 
 app.all('/restore/global', async (req, res) => {
-    const query = req.query;
+    const { query } = req;
 
-    const fileID = query.fileID;
+    const { fileID } = query;
 
     if (typeof fileID === 'undefined') {
-        res.status(400).send(`No fileID provided`);
+        res.status(400).send('No fileID provided');
 
         return;
     }
