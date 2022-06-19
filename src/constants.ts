@@ -5,10 +5,14 @@ export const constants = {
 };
 
 export const env = {
-    private_key: process.env.GSERVICEPRIVATEKEY!,
-    client_email: process.env.GSERVICEEMAIL!,
-    host: process.env.PGHOST!,
-    password: process.env.PGPASSWORD!,
-    port: process.env.PGPORT!,
-    user: process.env.PGUSER!,
+    cron: process.env.CRON ?? '0 */24 * * *',
+    gServiceClientEmail: process.env.GSERVICEEMAIL!,
+    gServicePrivateKey: process.env.GSERVICEPRIVATEKEY!,
+    port: process.env.PORT ?? 3000,
+    postgresHost: process.env.PGHOST!,
+    postgresPassword: process.env.PGPASSWORD!,
+    postgresPort: process.env.PGPORT!,
+    postgresUser: process.env.PGUSER!,
 };
+
+console.log('Environment Variables', env);

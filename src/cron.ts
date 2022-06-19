@@ -1,8 +1,9 @@
 import cron from 'node-cron';
 import process from 'node:process';
 import { backup } from './backup';
+import { env } from './constants';
 
-cron.schedule('0 */24 * * *', async (date) => {
+cron.schedule(env.cron, async (date) => {
     try {
         await backup(date);
     } catch (error) {

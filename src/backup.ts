@@ -26,11 +26,11 @@ export async function backup(date = new Date()) {
         createFile(
             'global.out',
             `pg_dumpall --host=${
-                env.host
+                env.postgresHost
             } --port=${
-                env.port
+                env.postgresPort
             } --username=${
-                env.user
+                env.postgresUser
             } --no-password --clean --file=global.out --globals-only`,
         ),
 
@@ -39,11 +39,11 @@ export async function backup(date = new Date()) {
             (database) => createFile(
                 `${database}.tar`,
                 `pg_dump --host=${
-                    env.host
+                    env.postgresHost
                 } --port=${
-                    env.port
+                    env.postgresPort
                 } --username=${
-                    env.user
+                    env.postgresUser
                 } --no-password --format=t ${
                     database
                 } > ${

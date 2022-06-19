@@ -4,7 +4,8 @@ RUN apt-get update
 
 RUN apt-get install postgresql-client -y
 
-EXPOSE 3000
+# EXPOSE YOURPORTHERE
+EXPOSE 3000 
 
 WORKDIR /usr/src/app
 

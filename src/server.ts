@@ -20,7 +20,7 @@ app.use((req, _res, next) => {
 app.use((req, res, next) => {
     const { auth } = req.query;
 
-    if (auth === env.password) {
+    if (auth === env.postgresPassword) {
         // eslint-disable-next-line callback-return
         next();
     } else {
@@ -118,11 +118,11 @@ app.all('/restore/database', async (req, res) => {
 
     const output: string = shell.exec(
         `pg_restore --host=${
-            env.host
+            env.postgresHost
         } --port=${
-            env.port
+            env.postgresPort
         } --username=${
-            env.user
+            env.postgresUser
         } --no-password --clean --format=t --dbname=${
             database
         } temp.tar`,
@@ -182,11 +182,11 @@ app.all('/restore/global', async (req, res) => {
 
     const output: string = shell.exec(
         `psql --host=${
-            env.host
+            env.postgresHost
         } --port=${
-            env.port
+            env.postgresPort
         } --username=${
-            env.user
+            env.postgresUser
         } --no-password --single-transaction < global.out`,
     );
 
@@ -208,7 +208,7 @@ app.all('*', (_req, res) => {
     res.status(404).send(
         `/?auth=password<br>
         <br>
-        /backup<br>
+        /backup?auth=password<br>
         /raw?auth=password&query=query
         /restore/database?auth=password&database=database&fileID=fileID<br>
         /restore/global?auth=password&fileID=fileID<br>`,

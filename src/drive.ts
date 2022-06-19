@@ -10,8 +10,8 @@ import {
 const authorization = auth.getClient({
     scopes: constants.scopes,
     credentials: {
-        private_key: env.private_key,
-        client_email: env.client_email,
+        private_key: env.gServicePrivateKey,
+        client_email: env.gServiceClientEmail,
     },
 });
 
