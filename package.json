@@ -27,5 +27,8 @@
     "scripts": {
         "build": "tsc -p .",
         "run": "node dist/main.js"
+    },
+    "engines": {
+        "node": ">=16.0.0"
     }
 }
