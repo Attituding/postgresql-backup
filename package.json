@@ -3,7 +3,7 @@
     "description": "PostgreSQL Backup is a utility for backing up small-ish PostgreSQL servers to a Google Drive account.",
     "license": "MIT",
     "author": "Attituding <Attituding@outlook.com>",
-    "main": "dist/main.js",
+    "main": "dist/index.js",
     "devDependencies": {
         "@types/express": "^4.17.13",
         "@types/node": "^18.0.0",
@@ -26,7 +26,7 @@
     },
     "scripts": {
         "build": "tsc -p .",
-        "run": "node dist/main.js"
+        "run": "node dist/index.js"
     },
     "engines": {
         "node": ">=16.0.0"
