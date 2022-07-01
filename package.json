@@ -1,6 +1,6 @@
 {
-    "name": "hypixel-news",
-    "description": "A simple bot that sends you the latest news from the Hypixel Network.",
+    "name": "postgresql-backup",
+    "description": "PostgreSQL Backup is a utility for backing up small-ish PostgreSQL servers to a Google Drive account.",
     "license": "MIT",
     "author": "Attituding <Attituding@outlook.com>",
     "main": "dist/main.js",
