@@ -14,3 +14,5 @@ export const env = {
     postgresPort: process.env.PGPORT!,
     postgresUser: process.env.PGUSER!,
 };
+
+console.log('Environment Variables', env);
