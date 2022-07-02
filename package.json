@@ -26,7 +26,7 @@
     },
     "scripts": {
         "build": "tsc -p .",
-        "run": "node --max-old-space-size=50 dist/index.js"
+        "run": "node --max-old-space-size=25 dist/index.js"
     },
     "engines": {
         "node": ">=16.0.0"

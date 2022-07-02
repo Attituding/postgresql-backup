@@ -2,6 +2,7 @@ import fsSync from 'node:fs';
 import shell from 'shelljs';
 import path from 'node:path';
 import process from 'node:process';
+import { getHeapStatistics } from 'v8';
 import {
     constants,
     env,
@@ -21,6 +22,11 @@ export async function backup(date = new Date()) {
         },
         fields: 'id',
     });
+
+    console.log(
+        getHeapStatistics().heap_size_limit,
+        (getHeapStatistics().heap_size_limit / 1024 ** 3).toFixed(3),
+    );
 
     await Promise.all([
         // Global objects (roles and tablespaces), no databases
