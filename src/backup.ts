@@ -1,7 +1,7 @@
 import fsSync from 'node:fs';
 import shell from 'shelljs';
 import path from 'node:path';
-import v8 from 'node:v8';
+import process from 'node:process';
 import {
     constants,
     env,
@@ -52,19 +52,11 @@ export async function backup(date = new Date()) {
                 }.tar`,
             ),
         ),
-        drive.files.create({
-            requestBody: {
-                name: 'v8 Heap Snapshot.heapsnapshot',
-                parents: [folder.data.id!],
-            },
-            media: {
-                mimeType: 'application/octet-stream',
-                body: v8.getHeapSnapshot(),
-            },
-        }),
     ]);
 
     console.log(`Created backup ${time}`);
+
+    console.log(process.memoryUsage());
 
     async function createFile(name: string, script: string) {
         const output = shell.exec(script);

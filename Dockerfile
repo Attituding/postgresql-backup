@@ -15,6 +15,6 @@ RUN npm install
 
 RUN npm run build
 
-RUN npm prune --production
+RUN npm i --omit=dev
 
 CMD npm run run
