@@ -18,15 +18,27 @@ app.use((req, _res, next) => {
 });
 
 app.use((req, res, next) => {
+    if (req.protocol === 'http') {
+        console.warn(400);
+        res.status(400).send(`Unsecure connection: ${req.protocol} is not https`);
+
+        return;
+    }
+
+    next();
+});
+
+app.use((req, res, next) => {
     const { auth } = req.query;
 
-    if (auth === env.postgresPassword) {
-        // eslint-disable-next-line callback-return
-        next();
-    } else {
+    if (auth !== env.postgresPassword) {
         console.warn(401);
         res.sendStatus(401);
+
+        return;
     }
+
+    next();
 });
 
 app.all('/backup', async (req, res) => {
