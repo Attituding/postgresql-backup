@@ -18,17 +18,6 @@ app.use((req, _res, next) => {
 });
 
 app.use((req, res, next) => {
-    if (req.protocol === 'http') {
-        console.warn(400);
-        res.status(400).send(`Unsecure connection: ${req.protocol} is not https`);
-
-        return;
-    }
-
-    next();
-});
-
-app.use((req, res, next) => {
     const { auth } = req.query;
 
     if (auth !== env.postgresPassword) {
