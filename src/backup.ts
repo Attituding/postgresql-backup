@@ -10,9 +10,13 @@ import {
 import { driveExport } from './drive';
 
 export async function backup(date = new Date()) {
+    console.log(process.memoryUsage());
+
     const drive = await driveExport();
 
     const time = date.toLocaleString(undefined, { hour12: false });
+
+    console.log(process.memoryUsage());
 
     const folder = await drive.files.create({
         requestBody: {
@@ -27,6 +31,8 @@ export async function backup(date = new Date()) {
         getHeapStatistics().heap_size_limit,
         (getHeapStatistics().heap_size_limit / 1024 ** 3).toFixed(3),
     );
+
+    console.log(process.memoryUsage());
 
     await Promise.all([
         // Global objects (roles and tablespaces), no databases
