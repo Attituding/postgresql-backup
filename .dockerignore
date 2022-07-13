@@ -1,7 +1,7 @@
 .vscode
 dist
 node_modules
-.env.sample
+sample.env
 .eslintrc
 .gitignore
 .prettierrc
