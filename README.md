@@ -6,7 +6,7 @@ By default, backups occur every twenty-four hours at midnight.
 
 Through the following endpoints, you can manually back up and restore your backups.
 
-Putting the passwords in the query is not a terrific idea, but does allow for easy usage in browsers.
+Putting the password in the query is probably not a terrific idea, but does allow for easy usage in browsers.
 
 ## /?auth=password
 Shows this information
