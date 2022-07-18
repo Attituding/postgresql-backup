@@ -152,7 +152,7 @@ app.all('/restore/global', async (req, res) => {
         return;
     }
 
-    const queryLength = Object.values(query);
+    const queryLength = Object.values(query).length;
 
     if (Number(queryLength) !== 2) {
         res.status(400).send(`Invalid amount of queries: ${queryLength} is not the expected amount of queries. Did you mean to use /restore/database?`);
@@ -210,7 +210,7 @@ app.all('*', (_req, res) => {
         `/?auth=password<br>
         <br>
         /backup?auth=password<br>
-        /raw?auth=password&query=query
+        /raw?auth=password&query=query<br>
         /restore/database?auth=password&database=database&fileID=fileID<br>
         /restore/global?auth=password&fileID=fileID<br>`,
     );
